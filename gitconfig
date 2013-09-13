@@ -1,0 +1,11 @@
+[user]
+	name = Trey Doig
+	email = john@doig.me
+[push]
+	default = current
+[branch]
+	autosetupmerge = true
+	autosetuprebase = always
+[github]
+	user = doigoid
+	oauth-token = 0f856fdb5ff484fb7658cd18cac32dfcde8f267e
