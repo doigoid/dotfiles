@@ -2,7 +2,9 @@
     ("gnu" . "http://elpa.gnu.org/packages/")
     ("marmalade" . "http://marmalade-repo.org/packages/")
     ("melpa" . "http://melpa.milkbox.net/packages/")))
+
 (package-initialize)
+(package-refresh-contents)
 
 ;; use $PATH
 (defun set-exec-path-from-shell-PATH ()
