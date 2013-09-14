@@ -1,0 +1,4 @@
+$ > git clone https://github.com/doigoid/dotfiles.git ~/.dotfiles 
+$ > cd ~/.dotfiles 
+$ > git submodule update --init 
+$ > ./make.sh 
