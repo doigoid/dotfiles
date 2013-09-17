@@ -126,6 +126,13 @@
 ;; highlight column 80 on python files
 (add-hook 'python-mode-hook
           (lambda () (interactive) (column-marker-1 80)))
+;; guest the tab style
+(smart-tabs-advice python-indent-line-1 python-indent)
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (setq indent-tabs-mode t)
+                (setq tab-width (default-value 'tab-width))))
+
 
 ;; Kills all them buffers except scratch
 ;; optained from http://www.chrislott.org/geek/emacs/dotemacs.html
