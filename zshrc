@@ -7,7 +7,7 @@ ZSH=$HOME/.dotfiles/oh-my-zsh
 # time that oh-my-zsh is loaded.
 ZSH_THEME="robbyrussell"
 
-plugins=(git git-extras git-remote-branch github osx django pip python redis-cli knife)
+plugins=(launchctl git git-extras git-remote-branch github osx django pip python redis-cli knife)
 
 source $ZSH/oh-my-zsh.sh
 

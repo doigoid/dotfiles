@@ -123,6 +123,28 @@
 ;; "C-h d transient" for more info
 (setq transient-mark-mode t)
 
+;; smart-tabs-advice function
+(defmacro smart-tabs-advice (function offset)
+  `(progn
+     (defvaralias ',offset 'tab-width)
+     (defadvice ,function (around smart-tabs activate)
+       (cond
+        (indent-tabs-mode
+         (save-excursion
+           (beginning-of-line)
+           (while (looking-at "\t*\\( +\\)\t+")
+             (replace-match "" nil nil nil 1)))
+         (setq tab-width tab-width)
+         (let ((tab-width fill-column)
+               (,offset fill-column)
+               (wstart (window-start)))
+           (unwind-protect
+               (progn ad-do-it)
+             (set-window-start (selected-window) wstart))))
+        (t
+         ad-do-it)))))
+
+
 ;; highlight column 80 on python files
 (add-hook 'python-mode-hook
           (lambda () (interactive) (column-marker-1 80)))
