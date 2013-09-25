@@ -6,3 +6,4 @@ emacs.d/var
 emacs.d/elpa/*
 emacs.d/ido.last
 emacs.d/places
+secrets
