@@ -4,7 +4,57 @@
     ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
-(package-refresh-contents)
+
+(defun doimports ()
+
+  ;; commenting this out for a faster startup
+  ;; (require 'magit-gh-pulls)
+  ;; (require 'color-theme)
+  ;; (require 'php-mode)
+  ;; (require 'coffee-mode)
+
+  (require 'column-marker)
+  (require 'magit)
+  (require 'sass-mode)
+  (require 'smart-tab)
+  (require 'uniquify)
+  (require 'python)
+  (require 'git-gutter))
+
+(defun installimports ()
+  (package-refresh-contents)
+  ;; external packages (installed via elpa)
+  (when (not (require 'php-mode nil t))
+    (package-install 'php-mode))
+  (when (not (require 'coffee-mode nil t))
+    (package-install 'coffee-mode))
+  (when (not (require 'column-marker nil t))
+    (package-install 'column-marker))
+  (when (not (require 'magit nil t))
+    (package-install 'magit))
+  (when (not (require 'magit-gh-pulls nil t))
+    (package-install 'magit-gh-pulls))
+  (when (not (require 'color-theme nil t))
+    (package-install 'color-theme))
+  (when (not (require 'sass-mode nil t))
+    (package-install 'sass-mode))
+  (when (not (require 'smart-tab nil t))
+    (package-install 'smart-tab))
+  (when (not (require 'uniquify nil t))
+    (package-install 'uniquify))
+  (when (not (require 'python nil this))
+    (package-install 'python))
+  (when (not (require 'git-gutter nil t))
+    (package-install 'git-gutter))
+  (color-theme-charcoal-black)
+)
+
+(if (display-graphic-p)
+  (doinstallimports)
+  (doimports))
+
+(when (display-graphic-p)
+  (set-exec-path-from-shell-PATH))
 
 ;; use $PATH
 (defun set-exec-path-from-shell-PATH ()
@@ -28,47 +78,7 @@
       (setq the-plist (cddr the-plist)))
   alist))
 
-(if window-system (set-exec-path-from-shell-PATH))
-
-;; external packages (installed via elpa)
-(when (not (require 'php-mode nil t))
-  (package-install 'php-mode))
-(when (not (require 'coffee-mode nil t))
-  (package-install 'coffee-mode))
-(when (not (require 'column-marker nil t))
-  (package-install 'column-marker))
-(when (not (require 'magit nil t))
-  (package-install 'magit))
-(when (not (require 'magit-gh-pulls nil t))
-  (package-install 'magit-gh-pulls))
-(when (not (require 'color-theme nil t))
-  (package-install 'color-theme))
-(when (not (require 'sass-mode nil t))
-  (package-install 'sass-mode))
-(when (not (require 'smart-tab nil t))
-  (package-install 'smart-tab))
-(when (not (require 'uniquify nil t))
-  (package-install 'uniquify))
-(when (not (require 'python nil t))
-  (package-install 'python))
-(when (not (require 'git-gutter nil t))
-  (package-install 'git-gutter))
-
-;; without the elpa checks
-;; (require 'php-mode)
-;; (require 'coffee-mode)
-;; (require 'column-marker)
-;; (require 'magit)
-;; (require 'magit-gh-pulls)
-;; (require 'color-theme)
-;; (require 'sass-mode)
-;; (require 'smart-tab)
-;; (require 'uniquify)
-;; (require 'python)
-;; (require 'git-gutter)
-
 ;; window configuration
-(color-theme-charcoal-black)
 (setq inhibit-splash-screen t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -80,7 +90,7 @@
 (setq ring-bell-function 'ignore)
 
 ;; buffer settings
-(global-auto-revert-mode t) 
+(global-auto-revert-mode t)
 (global-git-gutter-mode t)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -118,6 +128,7 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Highlight regions and add special behaviors to regions.
 ;; "C-h d transient" for more info
@@ -148,13 +159,6 @@
 ;; highlight column 80 on python files
 (add-hook 'python-mode-hook
           (lambda () (interactive) (column-marker-1 80)))
-;; guest the tab style
-(smart-tabs-advice python-indent-line-1 python-indent)
-    (add-hook 'python-mode-hook
-              (lambda ()
-                (setq indent-tabs-mode t)
-                (setq tab-width (default-value 'tab-width))))
-
 
 ;; Kills all them buffers except scratch
 ;; optained from http://www.chrislott.org/geek/emacs/dotemacs.html
@@ -176,7 +180,7 @@
 
 (defun my-tab-fix ()
   (local-set-key [tab] 'indent-or-expand))
- 
+
 (add-hook 'c-mode-hook          'my-tab-fix)
 (add-hook 'sh-mode-hook         'my-tab-fix)
 (add-hook 'emacs-lisp-mode-hook 'my-tab-fix)
@@ -209,4 +213,3 @@
 (global-set-key (kbd "C-x 9") 'balance-windows)
 (global-set-key (kbd "C-x z") 'zencoding-expand-line)
 (global-set-key (kbd "C-x F") 'ns-open-file-using-panel)
-

@@ -8,6 +8,7 @@ ZSH_THEME="robbyrussell"
 plugins=(launchctl git git-extras git-remote-branch github osx django pip python redis-cli knife)
 source $ZSH/oh-my-zsh.sh
 
+export EDITOR=emacs
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem:$GEM_PATH
 export WORKON_HOME=~/envs
