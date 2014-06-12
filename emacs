@@ -1,3 +1,25 @@
+;; use $PATH
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell (replace-regexp-in-string
+                          "[ \t\n]*$"
+                          ""
+                          (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq eshell-path-env path-from-shell) ; for eshell users
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+;; this function is unavailable in Emacs 24, support legacy calls to this
+(defun plist-to-alist (the-plist)
+  (defun get-tuple-from-plist (the-plist)
+    (when the-plist
+      (cons (car the-plist) (cadr the-plist))))
+
+  (let ((alist '()))
+    (while the-plist
+      (add-to-list 'alist (get-tuple-from-plist the-plist))
+      (setq the-plist (cddr the-plist)))
+  alist))
+
 (setq package-archives '(
     ("gnu" . "http://elpa.gnu.org/packages/")
     ("marmalade" . "http://marmalade-repo.org/packages/")
@@ -32,8 +54,6 @@
     (package-install 'column-marker))
   (when (not (require 'magit nil t))
     (package-install 'magit))
-  (when (not (require 'magit-gh-pulls nil t))
-    (package-install 'magit-gh-pulls))
   (when (not (require 'color-theme nil t))
     (package-install 'color-theme))
   (when (not (require 'sass-mode nil t))
@@ -42,41 +62,16 @@
     (package-install 'smart-tab))
   (when (not (require 'uniquify nil t))
     (package-install 'uniquify))
-  (when (not (require 'python nil this))
+  (when (not (require 'python nil t))
     (package-install 'python))
   (when (not (require 'git-gutter nil t))
     (package-install 'git-gutter))
-  (color-theme-charcoal-black)
 )
 
-(if (display-graphic-p)
-  (doinstallimports)
-  (doimports))
+(doimports)
 
 (when (display-graphic-p)
   (set-exec-path-from-shell-PATH))
-
-;; use $PATH
-(defun set-exec-path-from-shell-PATH ()
-  (let ((path-from-shell (replace-regexp-in-string
-                          "[ \t\n]*$"
-                          ""
-                          (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
-    (setenv "PATH" path-from-shell)
-    (setq eshell-path-env path-from-shell) ; for eshell users
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-;; this function is unavailable in Emacs 24, support legacy calls to this
-(defun plist-to-alist (the-plist)
-  (defun get-tuple-from-plist (the-plist)
-    (when the-plist
-      (cons (car the-plist) (cadr the-plist))))
-
-  (let ((alist '()))
-    (while the-plist
-      (add-to-list 'alist (get-tuple-from-plist the-plist))
-      (setq the-plist (cddr the-plist)))
-  alist))
 
 ;; window configuration
 (setq inhibit-splash-screen t)
@@ -213,3 +208,5 @@
 (global-set-key (kbd "C-x 9") 'balance-windows)
 (global-set-key (kbd "C-x z") 'zencoding-expand-line)
 (global-set-key (kbd "C-x F") 'ns-open-file-using-panel)
+
+(set-variable 'magit-emacsclient-executable "/usr/local/Cellar/emacs/HEAD/bin/emacsclient")

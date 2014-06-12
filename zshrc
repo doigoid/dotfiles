@@ -9,13 +9,15 @@ plugins=(launchctl git git-extras git-remote-branch github osx django pip python
 source $ZSH/oh-my-zsh.sh
 
 export EDITOR=emacs
-export GEM_HOME=~/.gem
-export GEM_PATH=~/.gem:$GEM_PATH
 export WORKON_HOME=~/envs
 
-export PATH=/usr/local/share/python:$GEM_HOME/bin:/usr/local/bin:$PATH
+export PATH=/usr/local/share/python:/usr/local/bin:$PATH
 
 source $DOTFILES/secrets
 
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
 source /usr/local/bin/virtualenvwrapper.sh
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
