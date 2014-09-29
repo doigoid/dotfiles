@@ -66,6 +66,8 @@
     (package-install 'python))
   (when (not (require 'git-gutter nil t))
     (package-install 'git-gutter))
+  (when (not (require 'go-mode nil t))
+    (package-install 'go-mode))
 )
 
 (doimports)
@@ -209,4 +211,15 @@
 (global-set-key (kbd "C-x z") 'zencoding-expand-line)
 (global-set-key (kbd "C-x F") 'ns-open-file-using-panel)
 
-(set-variable 'magit-emacsclient-executable "/usr/local/Cellar/emacs/HEAD/bin/emacsclient")
+(set-variable 'magit-emacsclient-executable "/usr/local/Cellar/emacs/24.3/bin/emacsclient")
+
+(defun magit-strip-orgin-from-branch-name
+  " Force magit to use the branch name from the remote. "
+  (remote branch)
+  (concat "" branch))
+
+(setq magit-default-tracking-name-function
+      'magit-strip-orgin-from-branch-name)
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
