@@ -41,7 +41,12 @@
   (require 'smart-tab)
   (require 'uniquify)
   (require 'python)
-  (require 'git-gutter))
+  (require 'git-gutter)
+  (require 'pyflakes)
+  (require 'pymacs)
+  (require 'auto-complete)
+  (require 'auto-complete-config)
+)
 
 (defun installimports ()
   (package-refresh-contents)
@@ -68,22 +73,38 @@
     (package-install 'git-gutter))
   (when (not (require 'go-mode nil t))
     (package-install 'go-mode))
+  (when (not (require 'pyflakes nil t))
+    (package-install 'pyflakes))
+  (when (not (require 'pymacs nil t))
+    (package-install 'pymacs))
+  (when (not (require 'auto-complete nil t))
+    (package-install 'auto-complete))
 )
 
 (doimports)
 
+(color-theme-initialize)
+(color-theme-charcoal-black)
+(ac-config-default)
+(global-auto-complete-mode t)
+
 (when (display-graphic-p)
-  (set-exec-path-from-shell-PATH))
+  (set-exec-path-from-shell-PATH)
+  (toggle-scroll-bar -1))
 
 ;; window configuration
 (setq inhibit-splash-screen t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(setq scroll-step 1 scroll-conservatively 10000)
-(setq line-number-mode t)
-(setq column-number-mode t)
+
+(setq
+ scroll-step 1 scroll-conservatively 10000
+ line-number-mode t
+ column-number-mode t
+ vc-follow-symlinks t
+ kill-whole-line t)
+
 (fset 'yes-or-no-p 'y-or-n-p)
-(toggle-scroll-bar -1)
 (setq ring-bell-function 'ignore)
 
 ;; buffer settings
@@ -223,3 +244,13 @@
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+;; python specific configurations
+(setq-default py-shell-name "ipython")
+(setq-default py-which-bufname "IPython")
+(setq py-force-py-shell-name-p t)
+
+; switch to the interpreter after executing code
+(setq py-shell-switch-buffers-on-execute-p t)
+(setq py-switch-buffers-on-execute-p t)
+(setq py-smart-indentation t)

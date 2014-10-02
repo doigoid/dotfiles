@@ -7,3 +7,4 @@ emacs.d/elpa/*
 emacs.d/ido.last
 emacs.d/places
 secrets
+/emacs.d/ac-comphist.dat
