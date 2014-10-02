@@ -83,14 +83,14 @@
 
 (doimports)
 
-(color-theme-initialize)
-(color-theme-charcoal-black)
 (ac-config-default)
 (global-auto-complete-mode t)
 
 (when (display-graphic-p)
   (set-exec-path-from-shell-PATH)
-  (toggle-scroll-bar -1))
+  (toggle-scroll-bar -1)
+  (color-theme-initialize)
+  (color-theme-charcoal-black))
 
 ;; window configuration
 (setq inhibit-splash-screen t)
