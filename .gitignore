@@ -11,3 +11,4 @@ secrets
 /.#emacs
 /emacs.d/emacs.d
 localrc
+/localrc
