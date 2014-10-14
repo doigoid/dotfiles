@@ -81,6 +81,10 @@
     (package-install 'auto-complete))
 )
 
+(if (featurep 'magit)
+    (doimports)
+    (installimports))
+
 (doimports)
 
 (ac-config-default)
@@ -232,7 +236,7 @@
 (global-set-key (kbd "C-x z") 'zencoding-expand-line)
 (global-set-key (kbd "C-x F") 'ns-open-file-using-panel)
 
-(set-variable 'magit-emacsclient-executable "/usr/local/Cellar/emacs/24.3/bin/emacsclient")
+;;(set-variable 'magit-emacsclient-executable "/usr/local/bin/emacs")
 
 (defun magit-strip-orgin-from-branch-name
   " Force magit to use the branch name from the remote. "

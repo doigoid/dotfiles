@@ -17,7 +17,11 @@ source $DOTFILES/secrets
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
 
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
-source /usr/local/bin/virtualenvwrapper.sh
+
+VIRTUALENVWRAPPER="/usr/local/bin/virtualenvwrapper.sh"
+if [ -f "$VIRTUALENVWRAPPER" ]; then
+   source $VIRTUALENVWRAPPER;
+fi
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
