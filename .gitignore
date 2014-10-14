@@ -10,3 +10,4 @@ secrets
 /emacs.d/ac-comphist.dat
 /.#emacs
 /emacs.d/emacs.d
+localrc
