@@ -36,3 +36,5 @@ venv_cd () {
     cd "$@" && has_virtualenv
 }
 alias cd="venv_cd"
+
+source $DOTFILES/localrc
