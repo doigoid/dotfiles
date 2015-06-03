@@ -20,13 +20,6 @@
       (setq the-plist (cddr the-plist)))
   alist))
 
-(setq package-archives '(
-    ("gnu" . "http://elpa.gnu.org/packages/")
-    ("marmalade" . "http://marmalade-repo.org/packages/")
-    ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-(package-initialize)
-
 (defun doimports ()
 
   ;; commenting this out for a faster startup
@@ -34,7 +27,7 @@
   ;; (require 'color-theme)
   ;; (require 'php-mode)
   ;; (require 'coffee-mode)
-
+  (package-initialize)
   (require 'column-marker)
   (require 'magit)
   (require 'sass-mode)
@@ -49,6 +42,11 @@
 )
 
 (defun installimports ()
+  (setq package-archives '(
+    ("gnu" . "http://elpa.gnu.org/packages/")
+    ("marmalade" . "http://marmalade-repo.org/packages/")
+    ("melpa" . "http://melpa.milkbox.net/packages/")))
+  (package-initialize)
   (package-refresh-contents)
   ;; external packages (installed via elpa)
   (when (not (require 'php-mode nil t))
@@ -79,11 +77,15 @@
     (package-install 'pymacs))
   (when (not (require 'auto-complete nil t))
     (package-install 'auto-complete))
+  (when (not (require 'emacs-powerline nil t))
+    (package-install 'emacs-powerline))
 )
 
-(if (featurep 'magit)
-    (doimports)
-    (installimports))
+;; (if (featurep 'magit)
+;;     (doimports)
+;;     (installimports))
+
+(doimports)
 
 (ac-config-default)
 (global-auto-complete-mode t)
@@ -175,7 +177,6 @@
         (t
          ad-do-it)))))
 
-
 ;; highlight column 80 on python files
 (add-hook 'python-mode-hook
           (lambda () (interactive) (column-marker-1 80)))
@@ -256,3 +257,5 @@
 (setq py-shell-switch-buffers-on-execute-p t)
 (setq py-switch-buffers-on-execute-p t)
 (setq py-smart-indentation t)
+
+;; (set-default-font "Inconsolata-14")

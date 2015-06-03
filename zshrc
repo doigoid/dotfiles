@@ -10,7 +10,7 @@ source $ZSH/oh-my-zsh.sh
 
 export EDITOR=emacs
 export WORKON_HOME=$HOME/.envs
-export GEM_HOME=$HOME/.gems
+#export GEM_HOME=$HOME/.gems
 
 export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$HOME/bin:$GEM_HOME/bin:$PATH
 source $DOTFILES/secrets
@@ -23,13 +23,13 @@ if [ -f "$VIRTUALENVWRAPPER" ]; then
    source $VIRTUALENVWRAPPER;
 fi
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+PATH=$PATH:$HOME/.rvm/bin:$HOME/.gems/bin:$HOME/bin;
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 has_virtualenv() {
     if [ -e .venv ]; then
-        workon `cat .venv`
+        source `cat .venv`
     fi
 }
 venv_cd () {
@@ -37,4 +37,14 @@ venv_cd () {
 }
 alias cd="venv_cd"
 
+venv_mkdir () {
+    if [ -n "$VIRTUAL_ENV" ];
+    then mkdir "$@" && touch "$@/__init__.py";
+    else mkdir "$@";
+    fi;
+}
+alias mkdir="venv_mkdir"
+
 source $DOTFILES/localrc
+
+eval "$(rbenv init -)"
