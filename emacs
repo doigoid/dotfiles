@@ -18,10 +18,14 @@
     (while the-plist
       (add-to-list 'alist (get-tuple-from-plist the-plist))
       (setq the-plist (cddr the-plist)))
-  alist))
+    alist))
+
+(require 'package) ;; You might already have this line
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(package-initialize) ;; You might already have this line
 
 (defun doimports ()
-
   ;; commenting this out for a faster startup
   ;; (require 'magit-gh-pulls)
   ;; (require 'color-theme)
@@ -37,8 +41,11 @@
   (require 'git-gutter)
   (require 'pyflakes)
   (require 'pymacs)
+  (require 'projectile)
+  (require 'fzf)
   (require 'auto-complete)
   (require 'auto-complete-config)
+  (require 'rjsx-mode)
 )
 
 (defun installimports ()
@@ -77,24 +84,24 @@
     (package-install 'pymacs))
   (when (not (require 'auto-complete nil t))
     (package-install 'auto-complete))
-  (when (not (require 'emacs-powerline nil t))
-    (package-install 'emacs-powerline))
+  (when (not (require 'projectile nil t))
+    (package-install 'projectile))
+  (when (not (require 'fzf nil t))
+    (package-install 'fzf))
 )
-
 ;; (if (featurep 'magit)
 ;;     (doimports)
 ;;     (installimports))
 
 (doimports)
-
 (ac-config-default)
 (global-auto-complete-mode t)
 
 (when (display-graphic-p)
   (set-exec-path-from-shell-PATH)
-  (toggle-scroll-bar -1)
-  (color-theme-initialize)
-  (color-theme-charcoal-black))
+  (toggle-scroll-bar -1))
+
+(set-cursor-color "#aaaacc")
 
 ;; window configuration
 (setq inhibit-splash-screen t)
@@ -103,7 +110,6 @@
 
 (setq
  scroll-step 1 scroll-conservatively 10000
- line-number-mode t
  column-number-mode t
  vc-follow-symlinks t
  kill-whole-line t)
@@ -114,14 +120,17 @@
 ;; buffer settings
 (global-auto-revert-mode t)
 (global-git-gutter-mode t)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
+(git-gutter:linum-setup)
+(global-display-line-numbers-mode)
 (set-default 'fill-column 80)
 
-;; xemacs specific
-(when (display-graphic-p)
- ;;(color-theme-charcoal-black)
- (set-cursor-color "#66FF66"))
+(setq-default display-line-numbers 'visual
+              display-line-numbers-current-absolute t
+              display-line-numbers-width 4
+              display-line-numbers-widen t)
+(set-face-attribute 'line-number nil :font "Inconsolata")
+(set-face-attribute 'line-number-current-line nil :font "Inconsolata" :background "#666" :foreground "white")
+
 
 ;; have ido ignore certain file and directory types
 (ido-mode t)
@@ -137,6 +146,7 @@
       '("\\.pyc/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"))
 (define-key ido-file-dir-completion-map
   [remap set-mark-command]  'ido-restrict-to-matches)
+
 (setq uniquify-buffer-name-style 'forward)
 
 ;; auto mode configurations
@@ -151,6 +161,7 @@
       `((".*" ,temporary-file-directory t)))
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-to-list 'auto-mode-alist '("fuji\\/.*\\.js\\'" . rjsx-mode))
 
 ;; Highlight regions and add special behaviors to regions.
 ;; "C-h d transient" for more info
@@ -202,6 +213,8 @@
 (defun my-tab-fix ()
   (local-set-key [tab] 'indent-or-expand))
 
+(set-default-font "Input-14")
+
 (add-hook 'c-mode-hook          'my-tab-fix)
 (add-hook 'sh-mode-hook         'my-tab-fix)
 (add-hook 'emacs-lisp-mode-hook 'my-tab-fix)
@@ -233,20 +246,27 @@
 (global-set-key (kbd "C-x \-") 'text-scale-decrease)
 (global-set-key (kbd "C-x 9") 'balance-windows)
 (global-set-key (kbd "C-x z") 'zencoding-expand-line)
+(global-set-key (kbd "C-x f") 'fsf)
 (global-set-key (kbd "C-x F") 'ns-open-file-using-panel)
 
 ;;(set-variable 'magit-emacsclient-executable "/usr/local/bin/emacs")
 
-(defun magit-strip-orgin-from-branch-name
-  " Force magit to use the branch name from the remote. "
-  (remote branch)
-  (concat "" branch))
+
+;; (defun magit-strip-orgin-from-branch-name
+;;   " Force magit to use the branch name from the remote. "
+;;   (remote branch)
+;;   (concat "" branch))
 
 (setq magit-default-tracking-name-function
       'magit-strip-orgin-from-branch-name)
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+(with-eval-after-load 'rjsx-mode
+  (define-key rjsx-mode-map "<" nil)
+  (define-key rjsx-mode-map (kbd "C-d") nil)
+  (define-key rjsx-mode-map ">" nil))
 
 ;; python specific configurations
 (setq-default py-shell-name "ipython")
@@ -257,5 +277,13 @@
 (setq py-shell-switch-buffers-on-execute-p t)
 (setq py-switch-buffers-on-execute-p t)
 (setq py-smart-indentation t)
+(setq sass-indent-offset 4)
+(setq js-indent-level 4)
+(setq js2-basic-offset 4)
+(setq sgml-basic-offset 4)
 
-;; (set-default-font "Inconsolata-14")
+(setq-default line-spacing 2)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+(load-theme 'atom-one-dark t)

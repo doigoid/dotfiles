@@ -1,6 +1,6 @@
 [user]
 	name = Trey Doig
-	email = john@doig.me
+	email = trey@pathlight.com
 
 [github]
 	user = doigoid
@@ -28,13 +28,14 @@
     untracked = cyan
 
 [push]
-    default = upstream
+	default = current
 [pull]
     default = current
+	rebase = true
 [diff]
     memonicprefix = true
 [branch]
-    autosetupmerge = true
+	autosetupmerge = always
     autosetuprebase = always
 [apply]
     whitespace = nowarn
@@ -56,7 +57,7 @@
     ai = add --interactive
 
     co = checkout
-    br = branch 
+    br = branch
     #"!git branch -ra | grep -v done"
     bra = branch -ra
     #list commands
@@ -78,7 +79,7 @@
     dlc = diff --cached HEAD^
     dr  = "!f() { git diff -w "$1"^.."$1"; }; f"
     diffr  = "!f() { git diff "$1"^.."$1"; }; f"
-    branch = branch -ra
+    #branch = branch -ra
 
     #reset commands
     r = reset
@@ -122,9 +123,22 @@
     lasttag = describe --tags --abbrev=0
     lt = describe --tags --abbrev=0
 
+    up = !git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
+    prune-branches = !git for-each-ref --shell --format='b="$(echo %(refname) | cut -sd / -f 3-)" && [ "$b" != master ] && git branch -d "$b"' refs/heads/ | sh
     #merges
     ours = "!f() { git co --ours $@ && git add $@; }; f"
     theirs = "!f() { git co --theirs $@ && git add $@; }; f"
+
+    # fetch the latest deploy tag matching the pattern argument: git sent prod
+    sent ="!f() { git describe --tags --abbrev=0 --match \"*$1*\"; }; f"
+    # list the commits you're about to send
+    send ="!f() { git log $(git describe --tags --abbrev=0 --match \"*$1*\")..master ${@:2}; }; f"
+
+    pr = "!f(){ \
+        hub pull-request -m \"$1\" -b master -h `git rev-parse --abbrev-ref HEAD`; \
+    }; f"
+
+    recent = "for-each-ref --sort=-committerdate --count=10 --format='%(refname:short)' refs/heads/"
 
     #list remotes
     rem="!git config -l | grep remote.*url | tail -n +2"
@@ -133,6 +147,20 @@
     lap = "!f() { git --git-dir=$1 format-patch -k -1 --stdout $2 | git am -3 -k; }; f"
 
     #subtree add
-    sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f" 
+    sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
 [core]
 	editor = emacs
+	excludesfile = /Users/trey/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+[mergetool "sourcetree"]
+	cmd = /private/var/folders/z3/8ygcz6g966d2gbtcc6cd8_700000gn/T/AppTranslocation/083AE2FA-B73D-461B-A861-DD7451DA50A0/d/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[url "https://"]
+	insteadOf = git://
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
