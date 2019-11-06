@@ -32,7 +32,7 @@
   ;; (require 'php-mode)
   ;; (require 'coffee-mode)
   (package-initialize)
-  (require 'column-marker)
+  ;;(require 'column-marker)
   (require 'magit)
   (require 'sass-mode)
   (require 'smart-tab)
@@ -60,8 +60,8 @@
     (package-install 'php-mode))
   (when (not (require 'coffee-mode nil t))
     (package-install 'coffee-mode))
-  (when (not (require 'column-marker nil t))
-    (package-install 'column-marker))
+  ;;(when (not (require 'column-marker nil t))
+  ;;  (package-install 'column-marker))
   (when (not (require 'magit nil t))
     (package-install 'magit))
   (when (not (require 'color-theme nil t))
@@ -88,7 +88,9 @@
     (package-install 'projectile))
   (when (not (require 'fzf nil t))
     (package-install 'fzf))
-)
+  )
+
+;; (installimports)
 ;; (if (featurep 'magit)
 ;;     (doimports)
 ;;     (installimports))
@@ -167,30 +169,33 @@
 ;; "C-h d transient" for more info
 (setq transient-mark-mode t)
 
+;; always open new files in an already open window
+(setq ns-pop-up-frames nil)
+
 ;; smart-tabs-advice function
-(defmacro smart-tabs-advice (function offset)
-  `(progn
-     (defvaralias ',offset 'tab-width)
-     (defadvice ,function (around smart-tabs activate)
-       (cond
-        (indent-tabs-mode
-         (save-excursion
-           (beginning-of-line)
-           (while (looking-at "\t*\\( +\\)\t+")
-             (replace-match "" nil nil nil 1)))
-         (setq tab-width tab-width)
-         (let ((tab-width fill-column)
-               (,offset fill-column)
-               (wstart (window-start)))
-           (unwind-protect
-               (progn ad-do-it)
-             (set-window-start (selected-window) wstart))))
-        (t
-         ad-do-it)))))
+;; (defmacro smart-tabs-advice (function offset)
+;;   `(progn
+;;      (defvaralias ',offset 'tab-width)
+;;      (defadvice ,function (around smart-tabs activate)
+;;        (cond
+;;         (indent-tabs-mode
+;;          (save-excursion
+;;            (beginning-of-line)
+;;            (while (looking-at "\t*\\( +\\)\t+")
+;;              (replace-match "" nil nil nil 1)))
+;;          (setq tab-width tab-width)
+;;          (let ((tab-width fill-column)
+;;                (,offset fill-column)
+;;                (wstart (window-start)))
+;;            (unwind-protect
+;;                (progn ad-do-it)
+;;              (set-window-start (selected-window) wstart))))
+;;         (t
+;;          ad-do-it)))))
 
 ;; highlight column 80 on python files
-(add-hook 'python-mode-hook
-          (lambda () (interactive) (column-marker-1 80)))
+;;(add-hook 'python-mode-hook
+;;          (lambda () (interactive) (column-marker-1 80)))
 
 ;; Kills all them buffers except scratch
 ;; optained from http://www.chrislott.org/geek/emacs/dotemacs.html
@@ -213,8 +218,6 @@
 (defun my-tab-fix ()
   (local-set-key [tab] 'indent-or-expand))
 
-(set-default-font "Input-14")
-
 (add-hook 'c-mode-hook          'my-tab-fix)
 (add-hook 'sh-mode-hook         'my-tab-fix)
 (add-hook 'emacs-lisp-mode-hook 'my-tab-fix)
@@ -222,6 +225,11 @@
 (add-hook 'html-mode-hook       'my-tab-fix)
 (add-hook 'js-mode-hook         'my-tab-fix)
 (add-hook 'sass-mode-hook       'my-tab-fix)
+(add-hook 'rjsx-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq js-indent-level 4)
+            (setq js2-strict-missing-semi-warning nil))) ;;disable the semicolon warning
 
 (defvar maxframe-maximized-p nil "maxframe is in fullscreen mode")
 (defun toggle-maxframe ()
@@ -238,7 +246,7 @@
 (global-set-key (kbd "C-l") 'goto-line)
 (global-set-key (kbd "C-x K") 'nuke-all-buffers)
 (global-set-key (kbd "C-x E") (lambda () (interactive) (find-file "~/.emacs")))
-(global-set-key (kbd "C-x P") (lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(global-set-key (kbd "C-x P") (lambda () (interactive) (insert "breakpoint()")))
 (global-set-key (kbd "<C-tab>") 'other-window)
 (global-set-key (kbd "C-x \/") 'comment-region)
 (global-set-key (kbd "C-x \\") 'uncomment-region)
@@ -259,6 +267,9 @@
 
 (setq magit-default-tracking-name-function
       'magit-strip-orgin-from-branch-name)
+(magit-define-popup-switch 'magit-push-popup ?u "Set upstream" "--set-upstream")
+(setq magit-push-current-set-remote-if-missing t)
+
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)

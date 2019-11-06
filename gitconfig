@@ -35,7 +35,7 @@
 [diff]
     memonicprefix = true
 [branch]
-	autosetupmerge = always
+	autoSetupMerge = always
     autosetuprebase = always
 [apply]
     whitespace = nowarn
@@ -130,12 +130,14 @@
     theirs = "!f() { git co --theirs $@ && git add $@; }; f"
 
     # fetch the latest deploy tag matching the pattern argument: git sent prod
-    sent ="!f() { git describe --tags --abbrev=0 --match \"*$1*\"; }; f"
+    lastdeploy ="!f() { git describe --tags --abbrev=0 --match \"*v$1*\"; }; f"
     # list the commits you're about to send
-    send ="!f() { git log $(git describe --tags --abbrev=0 --match \"*$1*\")..master ${@:2}; }; f"
+    send ="!f() { git log --pretty=oneline --abbrev-commit $(git describe --tags --abbrev=0 --match \"*$1*\")..master ${@:2}; }; f"
 
-    pr = "!f(){ \
-        hub pull-request -m \"$1\" -b master -h `git rev-parse --abbrev-ref HEAD`; \
+    # open a pull request, echos the url to the pr
+    newpr = "!f(){ \
+        git up; \
+        hub pull-request -m \"$(git log -1 --pretty=format:'%B')\" --edit -b master -h \"$(git rev-parse --abbrev-ref HEAD)\"; \
     }; f"
 
     recent = "for-each-ref --sort=-committerdate --count=10 --format='%(refname:short)' refs/heads/"
@@ -149,8 +151,8 @@
     #subtree add
     sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
 [core]
-	editor = emacs
 	excludesfile = /Users/trey/.gitignore_global
+	editor = emacs -nw
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path =
@@ -164,3 +166,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[remote "github"]
+	tagOpt = --tags
