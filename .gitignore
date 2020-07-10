@@ -12,3 +12,4 @@ secrets
 /emacs.d/emacs.d
 localrc
 /localrc
+/emacs.d/transient/
