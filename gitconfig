@@ -140,7 +140,7 @@
         hub pull-request -m \"$(git log -1 --pretty=format:'%B')\" --edit -b master -h \"$(git rev-parse --abbrev-ref HEAD)\"; \
     }; f"
 
-    recent = "for-each-ref --sort=-committerdate --count=10 --format='%(refname:short)' refs/heads/"
+    recent = "for-each-ref --sort=-committerdate --count=30 --format='%(refname:short)' refs/heads/"
 
     #list remotes
     rem="!git config -l | grep remote.*url | tail -n +2"

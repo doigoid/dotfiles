@@ -1,3 +1,6 @@
+;; (defun hello() (message "hello world"))
+;; (hello)
+
 ;; use $PATH
 (defun set-exec-path-from-shell-PATH ()
   (let ((path-from-shell (replace-regexp-in-string
@@ -43,6 +46,7 @@
   (require 'pymacs)
   (require 'projectile)
   (require 'fzf)
+  (require 'org)
   (require 'auto-complete)
   (require 'auto-complete-config)
   (require 'rjsx-mode)
@@ -130,8 +134,8 @@
               display-line-numbers-current-absolute t
               display-line-numbers-width 4
               display-line-numbers-widen t)
-(set-face-attribute 'line-number nil :font "Inconsolata")
-(set-face-attribute 'line-number-current-line nil :font "Inconsolata" :background "#666" :foreground "white")
+;;(set-face-attribute 'line-number nil :font "Inconsolata")
+;;(set-face-attribute 'line-number-current-line nil :font "Inconsolata" :background "#666" :foreground "white")
 
 
 ;; have ido ignore certain file and directory types
@@ -164,6 +168,8 @@
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-to-list 'auto-mode-alist '("fuji\\/.*\\.js\\'" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("denali\\/.*\\.js\\'" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("everest\\/.*\\.js\\'" . rjsx-mode))
 
 ;; Highlight regions and add special behaviors to regions.
 ;; "C-h d transient" for more info
@@ -257,9 +263,9 @@
 (global-set-key (kbd "C-x f") 'fsf)
 (global-set-key (kbd "C-x F") 'ns-open-file-using-panel)
 
+(setq org-log-done t)
+
 ;;(set-variable 'magit-emacsclient-executable "/usr/local/bin/emacs")
-
-
 ;; (defun magit-strip-orgin-from-branch-name
 ;;   " Force magit to use the branch name from the remote. "
 ;;   (remote branch)
@@ -267,7 +273,7 @@
 
 (setq magit-default-tracking-name-function
       'magit-strip-orgin-from-branch-name)
-(magit-define-popup-switch 'magit-push-popup ?u "Set upstream" "--set-upstream")
+;;(magit-define-popup-switch 'magit-push-popup ?u "Set upstream" "--set-upstream")
 (setq magit-push-current-set-remote-if-missing t)
 
 
